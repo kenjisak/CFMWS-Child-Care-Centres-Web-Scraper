@@ -1,0 +1,24 @@
+{
+  "name": "cfmws-child-care-centres-web-scraper",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "childCareHunting.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenjisak/CFMWS-Child-Care-Centres-Web-Scraper.git"
+  },
+  "author": "Kenji",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kenjisak/CFMWS-Child-Care-Centres-Web-Scraper/issues"
+  },
+  "homepage": "https://github.com/kenjisak/CFMWS-Child-Care-Centres-Web-Scraper#readme",
+  "dependencies": {
+    "crawler": "^2.0.2",
+    "mongoose": "^8.8.1"
+  }
+}
