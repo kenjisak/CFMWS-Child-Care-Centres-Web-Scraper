@@ -80,6 +80,13 @@ const c = new Crawler({
 
                 console.log(resultsTypeData + resultsTypeNumbersData);
 
+                let typesData = [];
+                $('.type').find('img').each((index, imgElement) => {
+                    typesData.push($(imgElement).attr('title'));
+                });
+
+                console.log(typesData);
+
                 let childCareProvidersNumData = content.find('.responsable').text().split(":")[1];
 
                 console.log(childCareProvidersNumData); 
