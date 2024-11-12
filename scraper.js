@@ -1,6 +1,5 @@
 import Crawler from "crawler";
-import fs from "fs";
-import path from 'path';
+import { decode } from 'html-entities';
 
 const allChildCareLinks = new Set();
 const centresLinks = new Set();
@@ -15,6 +14,7 @@ const c = new Crawler({
             console.log(error);
         } else {
             let baseWebLink = 'https://geoegl.msp.gouv.qc.ca/mfa/recherche-region.php';
+            let englishWeb = '&langue=en';
 
             let $ = res.$; //get cheerio data, see cheerio docs for info
 
@@ -24,24 +24,56 @@ const c = new Crawler({
 
             // console.log($(results).find('a'));
 
-            $(resultLinks).each(function (i, link) {
-                //Log out links
-                var webLink = $(link).attr('href');
-                if (webLink != undefined && webLink.includes('id=')) {
-                    console.log(webLink);
-                    allChildCareLinks.add(webLink);
+            // $(resultLinks).each(function (i, link) {
+            //     //Log out links
+            //     var webLink = $(link).attr('href');
+            //     if (webLink != undefined && webLink.includes('id=')) {
+            //         console.log(webLink);
+            //         allChildCareLinks.add(webLink + englishWeb);
 
-                    if (webLink.includes('fiche-service-garde')) {
-                        //figure out to separate for now
-                        centresLinks.add(webLink);
-                    } else {
-                        coordinatingOfficesLinks.add(webLink);
-                        c.add(baseWebLink + webLink);
-                    }
+            //         if (webLink.includes('fiche-service-garde')) {
+            //             //figure out to separate for now
+            //             centresLinks.add(webLink + englishWeb);
+            //         } else {
+            //             coordinatingOfficesLinks.add(webLink + englishWeb);
+            //             c.add(baseWebLink + webLink + englishWeb);
+            //         }
 
-                }
-            });
+            //     }
+            // });
 
+            // let nextPaginationLink = $('[alt="Next"]').parent().attr('href');
+            // console.log("add next page link: " + nextPaginationLink);
+            // c.add(baseWebLink + nextPaginationLink);
+            
+            if(resultLinks.length === 0){//is a real page crawled on
+                let allDetails = $('#fiche_descriptive');
+
+                let address = allDetails.find('.adresse');
+                // Loop through each element and process the content
+
+                let addressContentHtml = $(address).html();
+                const lines = addressContentHtml.split(/<br\s*\/?>/i);
+                
+                let streetAddress = lines[0].trim();
+                let provinceAndPostalCode = lines[1].trim();
+                
+                console.log(decode(streetAddress));
+                console.log(decode(provinceAndPostalCode));
+                
+                let contactNumbersData = allDetails.find('.contenu-fiche');
+                let phoneData = contactNumbersData.children().eq(1).text().replace("Phone:", '').trim();
+                let faxData = contactNumbersData.children().eq(2).text().replace("Fax:", '').trim();
+
+                console.log(phoneData);
+                console.log(faxData);
+                
+                let email = contactNumbersData.find('.electronique');
+                let emailData = email.find('a').text();
+
+                console.log(emailData);
+
+            }
             
         }
         done();
@@ -67,4 +99,4 @@ c.on('drain', async function () {
 });
 
 //URL to scrape child care info from
-c.add('https://geoegl.msp.gouv.qc.ca/mfa/recherche-region.php?submit=1&region_admin=06&mrc=&mun=&clsc=&cpe=1&garderie=1&milieuFamilial=1&sgd=1&cpeDev=1&garderieDev=1&langue=en');
+c.add('https://geoegl.msp.gouv.qc.ca/mfa/fiche-bureau-coordonnateur.php?id=BC70053858&langue=en');
