@@ -61,18 +61,28 @@ const c = new Crawler({
                 console.log(decode(streetAddress));
                 console.log(decode(provinceAndPostalCode));
                 
-                let contactNumbersData = allDetails.find('.contenu-fiche');
-                let phoneData = contactNumbersData.children().eq(1).text().replace("Phone:", '').trim();
-                let faxData = contactNumbersData.children().eq(2).text().replace("Fax:", '').trim();
+                let content = allDetails.find('.contenu-fiche');
+
+                let phoneData = content.children().eq(1).text().replace("Phone:", '').trim();
+                let faxData = content.children().eq(2).text().replace("Fax:", '').trim();
 
                 console.log(phoneData);
                 console.log(faxData);
                 
-                let email = contactNumbersData.find('.electronique');
+                let email = content.find('.electronique');
                 let emailData = email.find('a').text();
 
                 console.log(emailData);
+                
+                let resultsType = allDetails.find('.resultsType')
+                let resultsTypeData = $(resultsType).text();
+                let resultsTypeNumbersData = $(resultsType).parent().text().split(":")[1].replace("places", '').trim();
 
+                console.log(resultsTypeData + resultsTypeNumbersData);
+
+                let childCareProvidersNumData = content.find('.responsable').text().split(":")[1];
+
+                console.log(childCareProvidersNumData); 
             }
             
         }
