@@ -88,24 +88,21 @@ const c = new Crawler({
 
                 let territoryManaged = territoryCovered.eq(0).html();
                 let territoryManagedContent = territoryManaged.split(/<br\s*\/?>/i);
-                // console.log(territoryManagedContent);
-                let territoryManagedData = "";
-                territoryManagedContent.forEach(line => {
-                    territoryManagedData += line.trim();
-                  });
+                
+                let territoryManagedData = territoryManagedContent.map(item => item.trim()).filter(item => item.length > 0);
 
                 console.log(territoryManagedData);
 
                 let territoryMunicipalities = territoryCovered.eq(1).html();
                 let territoryMunicipalitiesContent = territoryMunicipalities.split(/<br\s*\/?>/i);
                 territoryMunicipalitiesContent.shift();
-                let territoryMunicipalitiesData = "";
-                console.log(territoryMunicipalitiesContent);
+                let territoryMunicipalitiesData = territoryMunicipalitiesContent.map(item => item.trim()).filter(item => item.length > 0);;
+                
                 // territoryMunicipalitiesContent.forEach(line => {
                 //     territoryMunicipalitiesData += line.trim();
                 //   });
 
-                // console.log(territoryMunicipalitiesData);
+                console.log(territoryMunicipalitiesData);
             }
             
         }
