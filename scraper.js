@@ -1,4 +1,3 @@
-import { log } from "console";
 import Crawler from "crawler";
 import fs from "fs";
 import path from 'path';
@@ -8,40 +7,49 @@ const centresLinks = new Set();
 const coordinatingOfficesLinks = new Set();
 
 const c = new Crawler({
-    maxConnections : 10, //use this for parallel, rateLimit for individual
+    maxConnections: 10, //use this for parallel, rateLimit for individual
     //rateLimit: 1000,
     // This will be called for each crawled page
-    callback : function (error, res, done) {
-        if(error){
+    callback: function (error, res, done) {
+        if (error) {
             console.log(error);
-        }else{
+        } else {
+            let baseWebLink = 'https://geoegl.msp.gouv.qc.ca/mfa/recherche-region.php';
+
             let $ = res.$; //get cheerio data, see cheerio docs for info
-            
+
             let resultLinks = $('#results a');
 
             // let results = $('#results').children().find('.liste-resultats');
 
             // console.log($(results).find('a'));
 
-            $(resultLinks).each(function(i, link){
+            $(resultLinks).each(function (i, link) {
                 //Log out links
                 var webLink = $(link).attr('href');
-                if(webLink != undefined && webLink.includes('id=')){
+                if (webLink != undefined && webLink.includes('id=')) {
                     console.log(webLink);
+                    allChildCareLinks.add(webLink);
+
+                    if (webLink.includes('fiche-service-garde')) {
+                        //figure out to separate for now
+                        centresLinks.add(webLink);
+                    } else {
+                        coordinatingOfficesLinks.add(webLink);
+                        c.add(baseWebLink + webLink);
+                    }
+
                 }
             });
 
-            let baseWebLink = 'https://geoegl.msp.gouv.qc.ca/mfa/recherche-region.php';
-            let nextPaginationLink = $('[alt="Next"]').parent().attr('href');
-            console.log("add next page link: " + nextPaginationLink);
-            c.add(baseWebLink + nextPaginationLink);
+            
         }
         done();
     }
 });
 
 //Triggered when the crawler queue becomes empty
-c.on('drain',async function(){
+c.on('drain', async function () {
     console.log("Done.");
     // downloadLinks.forEach(async link => {
     //     var linkCopy = link.toLowerCase();
@@ -51,10 +59,10 @@ c.on('drain',async function(){
     //         var fileName = link.split("/");
     //         fileName = fileName[fileName.length - 1];
     //         console.log(fileName);
-    
+
     //     }
     // });
-    
+
     // console.log("Links Downloaded Size: ",downloadLinks.size);
 });
 
