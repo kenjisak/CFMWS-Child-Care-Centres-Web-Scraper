@@ -53,10 +53,10 @@ const c = new Crawler({
                 // Loop through each element and process the content
 
                 let addressContentHtml = $(address).html();
-                const lines = addressContentHtml.split(/<br\s*\/?>/i);
+                let addressContentHtmlLines = addressContentHtml.split(/<br\s*\/?>/i);
                 
-                let streetAddress = lines[0].trim();
-                let provinceAndPostalCode = lines[1].trim();
+                let streetAddress = addressContentHtmlLines[0].trim();
+                let provinceAndPostalCode = addressContentHtmlLines[1].trim();
                 
                 console.log(decode(streetAddress));
                 console.log(decode(provinceAndPostalCode));
@@ -83,6 +83,29 @@ const c = new Crawler({
                 let childCareProvidersNumData = content.find('.responsable').text().split(":")[1];
 
                 console.log(childCareProvidersNumData); 
+
+                let territoryCovered = allDetails.find('.territoire-couvert').find('.ficheTextNormal');
+
+                let territoryManaged = territoryCovered.eq(0).html();
+                let territoryManagedContent = territoryManaged.split(/<br\s*\/?>/i);
+                // console.log(territoryManagedContent);
+                let territoryManagedData = "";
+                territoryManagedContent.forEach(line => {
+                    territoryManagedData += line.trim();
+                  });
+
+                console.log(territoryManagedData);
+
+                let territoryMunicipalities = territoryCovered.eq(1).html();
+                let territoryMunicipalitiesContent = territoryMunicipalities.split(/<br\s*\/?>/i);
+                territoryMunicipalitiesContent.shift();
+                let territoryMunicipalitiesData = "";
+                console.log(territoryMunicipalitiesContent);
+                // territoryMunicipalitiesContent.forEach(line => {
+                //     territoryMunicipalitiesData += line.trim();
+                //   });
+
+                // console.log(territoryMunicipalitiesData);
             }
             
         }
@@ -109,4 +132,4 @@ c.on('drain', async function () {
 });
 
 //URL to scrape child care info from
-c.add('https://geoegl.msp.gouv.qc.ca/mfa/fiche-bureau-coordonnateur.php?id=BC70053858&langue=en');
+c.add('https://geoegl.msp.gouv.qc.ca/mfa/fiche-bureau-coordonnateur.php?id=BC70054275&langue=en');
