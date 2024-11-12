@@ -19,6 +19,7 @@
   "homepage": "https://github.com/kenjisak/CFMWS-Child-Care-Centres-Web-Scraper#readme",
   "dependencies": {
     "crawler": "^2.0.2",
+    "exceljs": "^4.4.0",
     "mongoose": "^8.8.1"
   }
 }
